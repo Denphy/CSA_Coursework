@@ -73,6 +73,14 @@
         <h3>Номер посылки: @parcelNewID</h3>
     </div>
 </div>
+<div class="container my-3 px-3 py-3 rounded-3" style="background-color:#FFBC8D;" hidden="@hideThatNotSend">
+    <div class="col text-center">
+        <h2>Не получилось составить заявку.</h2>
+    </div>
+    <div class="col text-center">
+        <h3>Проверьте правильность введенных данных.</h3>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -107,6 +115,7 @@
     private string parcelSize;
     private int parcelNewID = 0;
     private bool hideThatSend = true;
+    private bool hideThatNotSend = true;
 
     private string[] rates = { "Эконом", "Ускоренный", "EMS" };
     private string currentRate = "Эконом";
@@ -117,6 +126,7 @@
     private async Task AddInfo()
     {
         hideThatSend = true;
+        hideThatNotSend = true;
         //adding Sender in Client
         clientS.ClientFullname = senderFullname;
         clientS.ClientPhone = senderPhone;
@@ -143,6 +153,8 @@
         bool result = await parcelProvider.Add(parcel);
         if (result)
             await ShowThatSend();
+            else
+            hideThatNotSend = false;
     }
     private async Task ShowThatSend()
     {
