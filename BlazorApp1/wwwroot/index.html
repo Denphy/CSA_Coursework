@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="shortcut icon" href="images/logo3.png">
+    <script src="https://kit.fontawesome.com/d278826f98.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript"></script>
+    <title>BlazorApp1</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="BlazorApp1.styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/main.css">
+
+
+</head>
+
+<body>
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script>
+        function initialize() {
+            var map = new ymaps.Map("map", {
+                center: [55.749492159936835, 37.632564343994225],
+                zoom: 11
+            });
+            var placemark1 = new ymaps.Placemark([55.84364965111238, 37.356893813491816], {
+                balloonContentHeader: 'Почтовое отделение "Митино"',
+                balloonContentBody: 'г Москва, ул. Дубравная, дом 39</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 1',
+                iconContent: '1'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+            var placemark2 = new ymaps.Placemark([55.858771068883634, 37.429671499999976], {
+                balloonContentHeader: 'Почтовое отделение "Северное Тушино"',
+                balloonContentBody: 'г. Москва, улица Героев Панфиловцев, 12к1</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 2',
+                iconContent: '2'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark3 = new ymaps.Placemark([55.83484056891159, 37.41749950000001], {
+                balloonContentHeader: 'Почтовое отделение "Южное Тушино"',
+                balloonContentBody: 'г. Москва, 2-й Тушинский проезд, 10</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 3',
+                iconContent: '3'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark4 = new ymaps.Placemark([55.75873656895454, 37.40671949999998], {
+                balloonContentHeader: 'Почтовое отделение "Крылатское"',
+                balloonContentBody: 'г Москва, Осенний бульвар, 11</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 4',
+                iconContent: '4'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark5 = new ymaps.Placemark([55.696579569033155, 37.56155349999995], {
+                balloonContentHeader: 'Почтовое отделение "Гагаринский"',
+                balloonContentBody: 'г Москва, Ленинский проспект, 57</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 5',
+                iconContent: '5'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark6 = new ymaps.Placemark([55.80319556894959, 37.5637275], {
+                balloonContentHeader: 'Почтовое отделение "Савеловский"',
+                balloonContentBody: 'г Москва, Петровско-Разумовский проезд, 24к4</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 6',
+                iconContent: '6'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark7 = new ymaps.Placemark([55.84977156889028, 37.658499499999955], {
+                balloonContentHeader: 'Почтовое отделение "Свиблово"',
+                balloonContentBody: 'г Москва, улица Амундсена, 1к1</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 7',
+                iconContent: '7'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark8 = new ymaps.Placemark([55.62740706912336, 37.65482549999991], {
+                balloonContentHeader: 'Почтовое отделение "Царицыно"',
+                balloonContentBody: 'г Москва, Кавказский бульвар, 35/2к1</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 8',
+                iconContent: '8'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark9 = new ymaps.Placemark([55.702743569049034, 37.78177549999997], {
+                balloonContentHeader: 'Почтовое отделение "Кузьминки"',
+                balloonContentBody: 'г Москва, Волгоградский проспект, 122к2</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 9',
+                iconContent: '9'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            var placemark10 = new ymaps.Placemark([55.79373306895504, 37.939267999999984], {
+                balloonContentHeader: 'Почтовое отделение "Балашиха"',
+                balloonContentBody: 'Московская область, Балашиха, шоссе Энтузиастов, 36А</br>' + '</br>' +
+                    'График работы:</br>' +
+                    'пн-пт: 08:00 - 20:00</br>' +
+                    'сб-вс: 09:00 - 18:00',
+                balloonContentFooter: 'Идентификатор пункта: 10',
+                iconContent: '10'
+            }, {
+                preset: 'islands#orangeIcon'
+            });
+
+            map.geoObjects.add(placemark1);
+            map.geoObjects.add(placemark2);
+            map.geoObjects.add(placemark3);
+            map.geoObjects.add(placemark4);
+            map.geoObjects.add(placemark5);
+            map.geoObjects.add(placemark6);
+            map.geoObjects.add(placemark7);
+            map.geoObjects.add(placemark8);
+            map.geoObjects.add(placemark9);
+            map.geoObjects.add(placemark10);
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+﻿@inject NavigationManager _navigationManager
+
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="/images/Postman.png" style="width:75%;">
+        </div>
+        <div class="col-md-6 pe-5 text-center">
+            <table style="height:100%; width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="align-middle">
+                            <div>
+                                <h1>Быстрая доставка</h1>
+                                <h2>Низкая цена</h2>
+                                <a href="send" class="btn btn-lg btn-link" type="button">Оформить посылку</a>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="row">
+        <div class="col-4 border-end border-dark">
+            <h3>Отследить (введите номер посылки)</h3>
+            <form class="d-flex">
+                <input class="form-control me-2" type="number" placeholder="Введите трек-номер" @bind-value="@parcelID" @bind-value:event="onchange">
+                <button @onclick="()=>toTrack(parcelID)" class="btn btn-lg btn-outline-link" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+        <div class="col">
+            <h3>Отправить посылку (введите номер пункта отправки и город получателя)</h3>
+            <form class="d-flex">
+                <input class="form-control me-3" type="number" placeholder="Идентификатор пункта отправки" @bind-value="@receptionID" @bind-value:event="onchange">
+                <input class="form-control me-3" type="text" placeholder="Город отправителя" @bind-value="@receiverCity" @bind-value:event="onchange">
+                <button @onclick="()=>toSend(receptionID, receiverCity)" class="btn btn-lg btn-link" type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+</div>
+@code {
+    private int parcelID;
+    private int receptionID;
+    private string receiverCity;
+    public void toTrack(int id)
+    {
+        _navigationManager.NavigateTo($"/track/{id}");
+    }
+    public void toSend(int rID, string rCity)
+    {
+        string sendInfo = rID.ToString() + "_" + rCity;
+        _navigationManager.NavigateTo($"/send/{sendInfo}");
+    }
+}

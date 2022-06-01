@@ -1,0 +1,144 @@
+﻿@inject NavigationManager _navigationManager
+@using BlazorApp1.Data.Services;
+@using BlazorApp1.Data.Models;
+
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="col text-center">
+        <h2>Отследить посылку</h2>
+    </div>
+    <div class="col text-center">
+        <form class="d-flex">
+            <input class="form-control me-2" type="number" placeholder="Введите трек-номер отправления" @bind-value="@parcelID" @bind-value:event="onchange" />
+            <button @onclick="() => ShowInfo(parcelID)" class="btn btn-lg btn-outline-link" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+</div>
+<div class="container my-3 px-3 py-3 rounded-3" style="background-color:#FFBC8D;" hidden="@hideNotFound">
+    <div class="col text-center">
+        <h2>Посылка не найдена</h2>
+    </div>
+</div>
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;" hidden="@hideInfo">
+    <div class="row">
+        <div class="col-4">
+            <img src="images/parcel1.jpg" class="rounded-3" style="width:80%;">
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Адрес пункта выдачи:</h3>
+                    <p>@reception.ReceptionAddress</p>
+                    <h3>ФИО отправителя:</h3>
+                    <p>@clientS.ClientFullname</p>
+                    <h3>ФИО получателя:</h3>
+                    <p>@clientR.ClientFullname</p>
+                </div>
+                <div class="col-6">
+                    <h3>Тариф доставки:</h3>
+                    <p>@parcel.ParcelRate</p>
+                    <h3>Размеры посылки:</h3>
+                    <p>@parcel.ParcelSize см</p>
+                    <h3>Вес посылки:</h3>
+                    <p>@parcel.ParcelWeight кг</p>
+                </div>
+            </div>
+            <button @onclick="@ShowHistory" class="btn btn-link w-100" type="button">Посмотреть историю перемещений</button>
+        </div>
+    </div>
+</div>
+<div class="container text-center" hidden="@hideHistory">
+    <div class="d-inline-flex flex-column  px-5 py-2 mb-2 rounded-3 text-center" style="background-color:#FFBC8D;">
+        <h2>История перемещений</h2>
+        <div class="flex-column" style="display:@hideStatus[5]">
+            <div class="flex-column p-2 rounded-3" style="background-color:#f2f2f2">
+                <h3 class="my-0">Принята получателем</h3>
+            </div>
+            <i class="fa-solid fa-arrow-up-long my-1"></i>
+        </div>
+        <div class="flex-column" style="display:@hideStatus[4]">
+            <div class="d-inline-flex flex-column p-2 rounded-3" style="background-color:#f2f2f2">
+                <h3 class="my-0">Ожидает получателя в пункте приема</h3>
+            </div>
+            <i class="fa-solid fa-arrow-up-long my-1"></i>
+        </div>
+        <div class="flex-column" style="display:@hideStatus[3]">
+            <div class="d-inline-flex flex-column p-2 rounded-3" style="background-color:#f2f2f2">
+                <h3 class="my-0">Получено в пункте приема</h3>
+            </div>
+            <i class="fa-solid fa-arrow-up-long my-1"></i>
+        </div>
+        <div class="flex-column" style="display:@hideStatus[2]">
+            <div class="d-inline-flex flex-column p-2 rounded-3" style="background-color:#f2f2f2">
+                <h3 class="my-0">Передано в доставку</h3>
+            </div>
+            <i class="fa-solid fa-arrow-up-long my-1"></i>
+        </div>
+        <div class="flex-column" style="display:@hideStatus[1]">
+            <div class="d-inline-flex flex-column p-2 rounded-3" style="background-color:#f2f2f2">
+                <h3 class="my-0">Принято в пункте отправки</h3>
+            </div>
+            <i class="fa-solid fa-arrow-up-long my-1"></i>
+        </div>
+        <div class="flex-column p-2 rounded-3" style="background-color:#f2f2f2; display:@hideStatus[0]">
+            <h3 class="my-0">Заявка оформлена</h3>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private IClientProvider clientProvider { get; set; }
+    [Inject]
+    private IParcelProvider parcelProvider { get; set; }
+    [Inject]
+    private IReceiverProvider receiverProvider { get; set; }
+    [Inject]
+    private IReceptionProvider receptionProvider { get; set; }
+    [Inject]
+    private ISenderProvider senderProvider { get; set; }
+    Parcel parcel = new Parcel();
+    Reception reception = new Reception();
+    Sender sender = new Sender();
+    Receiver receiver = new Receiver();
+    Client clientS = new Client();
+    Client clientR = new Client();
+    private bool hideNotFound = true;
+    private bool hideInfo = true;
+    private bool hideHistory = true;
+    private int parcelID;
+    int status = 0;
+    string[] hideStatus = new string[6];
+    private async Task ShowInfo(int parcelID)
+    {
+        parcel = await parcelProvider.GetOne(parcelID);
+        if (parcel.ParcelId != 0)
+        {
+            reception = await receptionProvider.GetOne(parcel.ReceptionId);
+            sender = await senderProvider.GetOne(parcel.SenderId);
+            receiver = await receiverProvider.GetOne(parcel.ReceiverId);
+            clientS = await clientProvider.GetOne(sender.ClientId);
+            clientR = await clientProvider.GetOne(receiver.ClientId);
+            hideNotFound = true;
+            hideInfo = false;
+            hideHistory = true;
+            Array.Fill(hideStatus, "none");
+        }
+        else
+        {
+            hideNotFound = false;
+            hideInfo = true;
+            hideHistory = true;
+        }
+    }
+    private void ShowHistory()
+    {
+        hideHistory = false;
+        ShowStatus(parcel.ParcelStatus);
+    }
+    private void ShowStatus(int? status)
+    {
+        for (int i = 0; i <= status; i++)
+            if (status < hideStatus.Length)
+                hideStatus[i] = "flex";
+    }
+}

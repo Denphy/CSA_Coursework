@@ -1,0 +1,149 @@
+﻿@inject NavigationManager _navigationManager
+@using BlazorApp1.Data.Services;
+@using BlazorApp1.Data.Models;
+
+
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="col text-center">
+        <h2>Отправить посылку</h2>
+    </div>
+    <div class="col text-center">
+    </div>
+</div>
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="col text-center">
+        <h2>Шаг 1. Кто, кому</h2>
+    </div>
+    <div class="col text-center px-5 py-2 rounded-3" style="background-color:#f2f2f2">
+        <h3>ФИО отправителя:</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@senderFullname" @bind-value:event="onchange">
+        <h3>Телефон отправителя:</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@senderPhone" @bind-value:event="onchange">
+        <h3>ФИО получателя:</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@receiverFullname" @bind-value:event="onchange">
+        <h3>Телефон получателя:</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@receiverPhone" @bind-value:event="onchange">
+    </div>
+</div>
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="col text-center">
+        <h2>Шаг 2. Откуда, куда, вес, размер</h2>
+    </div>
+    <div class="col text-center px-5 py-2 rounded-3" style="background-color:#f2f2f2">
+        <h3>Идентификатор пункта отправки:</h3>
+        <input class="form-control me-2 text-center" type="number" @bind-value="@receptionID" @bind-value:event="onchange">
+        <h3>Адрес получателя:</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@parcelAddress" @bind-value:event="onchange">
+        <h3>Вес посылки:</h3>
+        <input class="form-control me-2 text-center" type="number" @bind-value="@parcelWeight" @bind-value:event="onchange">
+        <h3>Размер посылки (см x см x см):</h3>
+        <input class="form-control me-2 text-center" type="text" @bind-value="@parcelSize" @bind-value:event="onchange">
+    </div>
+</div>
+<div class="container my-2 px-5 py-2 rounded-3" style="background-color:#FFBC8D;">
+    <div class="col text-center">
+        <h2>Шаг 3. Тариф</h2>
+    </div>
+    <div class="col text-center px-5 py-2 rounded-3" style="background-color:#f2f2f2">
+        <input type="radio" class="btn-check" name="options" id="option1" @onclick="() => SetRate(rates[0])" checked>
+        <label class="btn btn-danger btn-choose mx-2" for="option1">@rates[0]</label>
+
+        <input type="radio" class="btn-check" name="options" id="option2" @onclick="() => SetRate(rates[1])">
+        <label class="btn btn-danger btn-choose mx-2" for="option2">@rates[1]</label>
+
+        <input type="radio" class="btn-check" name="options" id="option3" @onclick="() => SetRate(rates[2])">
+        <label class="btn btn-danger btn-choose mx-2" for="option3">@rates[2]</label>
+    </div>
+</div>
+<div class="container px-0 mb-2">
+    <button class="btn btn-link w-100 pt-3" type="button" @onclick="() => AddInfo()"><h3>Отправить посылку</h3></button>
+</div>
+<div class="container my-3 px-3 py-3 rounded-3" style="background-color:#FFBC8D;" hidden="@hideThatSend">
+    <div class="col text-center">
+        <h2>Заявка составлена.</h2>
+    </div>
+    <div class="col text-center">
+        <h3>Номер посылки: @parcelNewID</h3>
+    </div>
+</div>
+<div class="container my-3 px-3 py-3 rounded-3" style="background-color:#FFBC8D;" hidden="@hideThatNotSend">
+    <div class="col text-center">
+        <h2>Не получилось составить заявку.</h2>
+    </div>
+    <div class="col text-center">
+        <h3>Проверьте правильность введенных данных.</h3>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private IClientProvider clientProvider { get; set; }
+    [Inject]
+    private IParcelProvider parcelProvider { get; set; }
+    [Inject]
+    private IReceiverProvider receiverProvider { get; set; }
+    [Inject]
+    private ISenderProvider senderProvider { get; set; }
+    Parcel parcel = new Parcel();
+    Sender sender = new Sender();
+    Receiver receiver = new Receiver();
+    Client clientS = new Client();
+    Client clientR = new Client();
+    private string senderFullname;
+    private string senderPhone;
+    private string receiverFullname;
+    private string receiverPhone;
+    private string parcelAddress;
+    private int receptionID;
+    private int parcelWeight;
+    private string parcelSize;
+    private int parcelNewID = 0;
+    private bool hideThatSend = true;
+    private bool hideThatNotSend = true;
+
+    private string[] rates = { "Эконом", "Ускоренный", "EMS" };
+    private string currentRate = "Эконом";
+    private void SetRate(string s)
+    {
+        currentRate = s;
+    }
+    private async Task AddInfo()
+    {
+        hideThatSend = true;
+        hideThatNotSend = true;
+        //adding Sender in Client
+        clientS.ClientFullname = senderFullname;
+        clientS.ClientPhone = senderPhone;
+        clientProvider.Add(clientS);
+        //adding Sender in Sender
+        sender.ClientId = await clientProvider.GetLast();
+        senderProvider.Add(sender);
+        parcel.SenderId = await senderProvider.GetLast(); // saving SenderId for Parcel
+        //adding Receiver in Client
+        clientR.ClientFullname = receiverFullname;
+        clientR.ClientPhone = receiverPhone;
+        clientProvider.Add(clientR);
+        //adding Receiver in Receiver
+        receiver.ClientId = await clientProvider.GetLast();
+        receiverProvider.Add(receiver);
+        //adding parcel
+        parcel.ReceiverId = await receiverProvider.GetLast(); // saving ReceiverId for Parcel
+        parcel.ReceptionId = receptionID;
+        parcel.ParcelRate = currentRate;
+        parcel.ParcelSize = parcelSize;
+        parcel.ParcelWeight = parcelWeight;
+        parcel.ParcelAddress = parcelAddress;
+        parcel.ParcelStatus = 0;
+        bool result = await parcelProvider.Add(parcel);
+        if (result)
+            await ShowThatSend();
+        else
+            hideThatNotSend = false;
+    }
+    private async Task ShowThatSend()
+    {
+        parcelNewID = await parcelProvider.GetLast();
+        hideThatSend = false;
+    }
+
+}

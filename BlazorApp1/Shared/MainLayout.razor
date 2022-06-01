@@ -1,0 +1,60 @@
+﻿@inherits LayoutComponentBase
+
+<div class="wrapper">
+    <div class="content m-0 p-0">
+        <nav class="navbar navbar-expand-lg bg-dark">
+            <div class="container nav">
+                <a class="navbar-brand" href="">
+                    <img src="images/logo3.png" width="95">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link link" href="receptions">Пункты отправки и приема</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Услуги
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="track">Отследить посылку</a></li>
+                                <li><a class="dropdown-item" href="send">Отправить посылку</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+            @Body
+    </div>
+    <footer class="border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <h2>Меню</h2>
+                    <ul class="list-unstyled">
+                        <li class="li"><a href="">Главная</a></li>
+                        <li class="li"><a href="reception">Пункты отправки и приема</a></li>
+                        <li class="li"><a href="track">Отследить посылку</a></li>
+                        <li class="li"><a href="send">Отправить посылку</a></li>
+                    </ul>
+                </div>
+                <div class="col-4">
+                    <p class="text-center">© AzamatExpress, 2022 г. Все права защищены.</p>
+                </div>
+                <div class="col-4 text-end">
+                    <h2>О компании</h2>
+                    <ul class="list-unstyled">
+                        <li class="li"><a href="underdevelopment">Новости компании</a></li>
+                        <li class="li"><a href="underdevelopment">Руководство компании</a></li>
+                        <li class="li"><a href="underdevelopment">Патнеры компании</a></li>
+                        <li class="li"><a href="underdevelopment">Ответы на вопросы</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
